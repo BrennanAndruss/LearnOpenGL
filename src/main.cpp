@@ -4,6 +4,7 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
 
 const unsigned int SRC_WIDTH = 800;
 const unsigned int SRC_HEIGHT = 600;
@@ -41,9 +42,17 @@ int main()
 	// Render loop to keep the program running
 	while (!glfwWindowShouldClose(window))
 	{
-		// Swap the color buffer and show it as output to the window
+		// Process inputs
+		processInput(window);
+
+		// Set the state of the color to clear the screen
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		// Clear the color buffer to the state set above
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// Swap front and back buffers to update output to window
 		glfwSwapBuffers(window);
-		// Check if any events are triggered and updates the window state
+		// Poll IO events and update the window state
 		glfwPollEvents();
 	}
 
@@ -57,4 +66,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// Tell OpenGL the size of the resized rendering window
 	glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow* window)
+{
+	// Close the window when the escape key is pressed
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 }
