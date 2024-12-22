@@ -42,7 +42,7 @@ int main()
 	}
 
 	// Build and compile our shader program
-	Shader ourShader("../shaders/shader.vert", "../shaders/shader.frag");
+	Shader ourShader("../resources/shader.vert", "../resources/shader.frag");
 	
 	// Define vertices in normalized device coordinates along with triangle indices
 	float vertices[] = {
@@ -84,6 +84,9 @@ int main()
 
 		// Activate the shader
 		ourShader.use();
+
+		// Set an offset for the triangle
+		ourShader.setFloat("xOffset", 0.5f);
 
 		// Render the triangle
 		glBindVertexArray(VAO);
