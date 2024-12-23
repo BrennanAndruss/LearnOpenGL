@@ -12,6 +12,8 @@ void processInput(GLFWwindow* window);
 const unsigned int SRC_WIDTH = 800;
 const unsigned int SRC_HEIGHT = 600;
 
+float mixVal = 0.2f;
+
 int main()
 {
 	// Initialize GLFW
@@ -48,10 +50,10 @@ int main()
 	// Define vertex data for a rectangle shape
 	float vertices[] = {
 		// positions          // colors           // texture coords
-		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   2.0f, 2.0f,   // top right
+		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f,   // bottom right
 		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f    // top left 
 	};
 	// Define triangle indices for a rectangle shape
 	unsigned int indices[] = {
@@ -70,6 +72,10 @@ int main()
 	// Activate texture units and bind the first texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
+
+	// Set texture wrapping options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	// Obtain the width, height, and number of color channels of the image
 	int width, height, nrChannels;
@@ -91,6 +97,7 @@ int main()
 	// Configure the second texture
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture2);
+	// Default texture wrap behavior is repeat
 	data = stbi_load("../resources/awesomeface.png", &width, &height, &nrChannels, 0);
 	if (data)
 	{
@@ -141,10 +148,11 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// Activate the shader and set uniforms for texture samplers
+		// Activate the shader and set uniforms for texture samplers and mix value
 		ourShader.use();
 		ourShader.setInt("texture1", 0);
 		ourShader.setInt("texture2", 1);
+		ourShader.setFloat("mixVal", mixVal);
 
 		// Activate texture units and bind textures
 		glActiveTexture(GL_TEXTURE0);
@@ -180,4 +188,20 @@ void processInput(GLFWwindow* window)
 	// Close the window when the escape key is pressed
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+	// Increase the mix value when the up arrow key is pressed
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		mixVal += 0.001f;
+		if (mixVal >= 1.0f)
+			mixVal = 1.0f;
+	}
+
+	// Decrease the mix value when the down arrow key is pressed
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		mixVal -= 0.001f;
+		if (mixVal <= 0.0f)
+			mixVal = 0.0f;
+	}
 }
