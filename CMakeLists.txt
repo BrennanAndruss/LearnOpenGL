@@ -18,16 +18,19 @@ file(GLOB_RECURSE SOURCES
 	"${CMAKE_SOURCE_DIR}/ext/glad/src/*.c"
 )
 
-# Include header and resource files for IDE support
-file(GLOB_RECURSE HEADERS "src/*.h" "ext/glad/*/*.h")
-file(GLOB_RECURSE GLSL "resources/*.vert" "resources/*.frag")
+# Collect header and resource files for IDE support
+file(GLOB_RECURSE HEADERS "src/*.h" "ext/stb/*.h" "ext/glad/*/*.h")
+source_group("Header Files" FILES ${HEADERS})
+
+file(GLOB_RECURSE RESOURCES  "resources/*.vert" "resources/*.frag")
+source_group("Resource Files" FILES ${RESOURCES})
 
 # Include directories for headers
 include_directories("ext")
 include_directories("ext/glad/include")
 
 # Set the executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 
 # Link libraries for the project
 target_link_libraries(${PROJECT_NAME} PRIVATE
