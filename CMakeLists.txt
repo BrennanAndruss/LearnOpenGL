@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Add the GLFW submodule directory to the include path
+# Add submodule directories to the include path
 add_subdirectory(ext/glfw)
+add_subdirectory(ext/glm)
 
 # Find OpenGL
 find_package(OpenGL REQUIRED)
@@ -35,6 +36,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 # Link libraries for the project
 target_link_libraries(${PROJECT_NAME} PRIVATE
 	glfw
+	glm
 	${OPENGL_LIBRARIES}
 )
 
