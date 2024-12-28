@@ -152,7 +152,7 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		// Create a transformation matrix and apply it to the vector
+		// Create a transformation matrix
 		glm::mat4 trans = glm::mat4(1.0f);
 		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -162,8 +162,20 @@ int main()
 		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-		// Render the triangle
+		// Render the first container
 		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		// Create a second transformation matrix
+		trans = glm::mat4(1.0f);
+		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+		float scaleAmount = static_cast<float>(sin(glfwGetTime()));
+		trans = glm::scale(trans, glm::vec3(scaleAmount));
+		
+		// Set the uniform for the second transformation matrix
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
+		// Render the second container
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// Swap front and back buffers to update output to window
